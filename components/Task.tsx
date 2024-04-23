@@ -9,15 +9,15 @@ export function Task(props) {
     <View style={$container}>
       <CheckBox />
 
-      <View style={$textContainer}>
+      <View style={$taskContainer}>
         <Text style={$text}>Task 1</Text>
-        <SizedBox height={12} />
-        <Text>Ưu tiên cao</Text>
+
+        <Text style={$priorityText}>Ưu tiên cao</Text>
       </View>
       <View style={$endContainer}>
         <FontAwesome name="pencil" size={24} color="black" />
-        <SizedBox height={10} />
-        <Text>Còn 2 ngày</Text>
+
+        <Text style={$dateText}>Còn 2 ngày</Text>
       </View>
     </View>
   );
@@ -27,14 +27,28 @@ const CheckBox = () => {
   return <View style={$checkBox} />;
 };
 
+const $dateText: TextStyle = {
+  fontSize: 12,
+  fontWeight: "400",
+};
+
+const $priorityText: TextStyle = {
+  fontSize: 14,
+  fontWeight: "400",
+  color: colors.green,
+};
+
 const $endContainer: ViewStyle = {
   marginRight: 24,
   alignItems: "flex-end",
+
+  justifyContent: "space-between",
 };
 
-const $textContainer: ViewStyle = {
+const $taskContainer: ViewStyle = {
   marginStart: 20,
   flex: 1,
+  justifyContent: "space-between",
 };
 
 const $checkBox: ViewStyle = {
