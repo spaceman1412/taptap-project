@@ -10,7 +10,7 @@ import { useState } from "react";
 import { addTodo, Todo } from "./store/todoSlice";
 import { getSize } from "./themes/responsive";
 
-export function generateUUID(digits) {
+export function generateUUID(digits: number) {
   let str = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXZ";
   let uuid = [];
   for (let i = 0; i < digits; i++) {
@@ -32,7 +32,7 @@ export default function App() {
 
   const getSortedTodoList = () => {
     let sortedArray = todoLists.concat();
-    const getPoint = (priority) => {
+    const getPoint = (priority: string) => {
       if (priority === "high") return 2;
       else if (priority === "medium") return 1;
       else if (priority === "low") return 0;
@@ -77,7 +77,7 @@ export default function App() {
       <FlatList
         data={getSortedTodoList()}
         keyExtractor={(item) => item.id}
-        renderItem={(item) => <Task value={item} />}
+        renderItem={(value) => <Task value={value.item} />}
         ItemSeparatorComponent={() => <View style={{ height: 24 }} />}
         contentContainerStyle={$flatList}
         showsVerticalScrollIndicator={false}

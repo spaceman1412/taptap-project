@@ -12,11 +12,14 @@ import { SizedBox } from "./SizedBox";
 import { useDispatch } from "react-redux";
 import { getSize } from "../themes/responsive";
 
-export function Button({ onClick }) {
-  const dispatch = useDispatch();
+interface ButtonProps {
+  onClick: () => void;
+}
+
+export function Button(props: ButtonProps) {
   return (
     <View style={$buttonContainer}>
-      <TouchableOpacity style={$button} onPress={onClick}>
+      <TouchableOpacity style={$button} onPress={props.onClick}>
         <>
           <Text style={$text}>Tạo task mới</Text>
           <SizedBox width={10} />

@@ -24,7 +24,6 @@ export const todoSlice = createSlice({
   reducers: {
     addTodo: (state, action: PayloadAction<Todo>) => {
       state.todoLists.push(action.payload);
-      console.log(action.payload);
     },
     removeTodo: (state, action: PayloadAction<string>) => {
       state.todoLists = state.todoLists.filter(

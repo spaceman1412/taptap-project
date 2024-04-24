@@ -19,7 +19,11 @@ import { editTodo, removeTodo, Todo } from "../store/todoSlice";
 import { useDispatch } from "react-redux";
 import { getSize } from "../themes/responsive";
 
-export function Task({ value }) {
+interface TaskProps {
+  value: Todo;
+}
+
+export function Task(props: TaskProps) {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
 
@@ -31,9 +35,9 @@ export function Task({ value }) {
     <>
       {open ? (
         <OpenTask
-          value={value.item}
+          value={props.value}
           onDelete={() => {
-            dispatch(removeTodo(value.item.id));
+            dispatch(removeTodo(props.value.id));
           }}
           onDone={(todo) => {
             dispatch(editTodo(todo));
@@ -41,13 +45,13 @@ export function Task({ value }) {
           }}
         />
       ) : (
-        <CloseTask onClick={changeStatus} value={value.item} />
+        <CloseTask onClick={changeStatus} value={props.value} />
       )}
     </>
   );
 }
 
-const getDatesBetween = (day) => {
+const getDatesBetween = (day: string) => {
   const date = new Date(day);
   const currentDate = new Date();
   // Calculating the time difference
@@ -57,12 +61,18 @@ const getDatesBetween = (day) => {
   // Calculating the no. of days between
   // two dates
   let Difference_In_Days = Math.round(Difference_In_Time / (1000 * 3600 * 24));
-  console.log(Difference_In_Days);
 
   return Difference_In_Days > 0 ? Difference_In_Days : 0;
 };
 
-const CloseTask = ({ onClick, value }) => {
+interface CloseTaskProps {
+  onClick: () => void;
+  value: Todo;
+}
+
+const CloseTask = (props: CloseTaskProps) => {
+  const { value, onClick } = props;
+
   let priorityText;
   let priorityColor;
 
@@ -109,11 +119,19 @@ export const getFormattedDate = (date: Date) => {
   return currentDate;
 };
 
-export const OpenTask = ({ onDone, onDelete, value }) => {
+interface OpenTaskProps {
+  onDone: (todo: Todo) => void;
+  onDelete: () => void;
+  value: Todo;
+}
+
+export const OpenTask = (props: OpenTaskProps) => {
+  const { onDone, onDelete, value } = props;
   const [text, onChangeText] = useState(value.text);
   const [date, setDate] = useState(new Date(value.date));
   const [show, setShow] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState(value.priority);
+
   const currentTodo: Todo = {
     text,
     date: date.toISOString(),
