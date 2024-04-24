@@ -45,11 +45,9 @@ const getFormattedDate = (date: Date) => {
   return currentDate;
 };
 
-const OpenTask = () => {
-  const [text, onChangeText] = useState("Task 1");
+const DateTextBox = () => {
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState();
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
@@ -60,6 +58,67 @@ const OpenTask = () => {
   const showMode = () => {
     setShow(true);
   };
+
+  return (
+    <>
+      <TouchableOpacity
+        onPress={showMode}
+        style={{ flexDirection: "row", justifyContent: "space-between" }}
+      >
+        <Text style={$text}>Thời hạn</Text>
+        <Text>{getFormattedDate(date)}</Text>
+      </TouchableOpacity>
+
+      {show && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={date}
+          mode={"date"}
+          is24Hour={true}
+          onChange={onChange}
+        />
+      )}
+
+      <SizedBox height={8} />
+
+      <View style={{ height: 1, backgroundColor: colors.gray }} />
+    </>
+  );
+};
+
+const PickerTextBox = () => {
+  const [selectedLanguage, setSelectedLanguage] = useState();
+
+  return (
+    <>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Text style={$text}>Mức độ ưu tiên</Text>
+        <Picker
+          selectedValue={selectedLanguage}
+          onValueChange={(itemValue, itemIndex) =>
+            setSelectedLanguage(itemValue)
+          }
+          style={{ width: 120 }}
+        >
+          <Picker.Item label="Cao" value="high" style={$text} />
+          <Picker.Item label="Trung bình" value="medium" style={$text} />
+          <Picker.Item label="Thấp" value="low" style={$text} />
+        </Picker>
+      </View>
+
+      <View style={{ height: 1, backgroundColor: colors.gray }} />
+    </>
+  );
+};
+
+const OpenTask = () => {
+  const [text, onChangeText] = useState("Task 1");
 
   return (
     <View style={$closeContainer}>
@@ -87,52 +146,11 @@ const OpenTask = () => {
       />
 
       <SizedBox height={22} />
-      <TouchableOpacity
-        onPress={showMode}
-        style={{ flexDirection: "row", justifyContent: "space-between" }}
-      >
-        <Text style={$text}>Thời hạn</Text>
-        <Text>{getFormattedDate(date)}</Text>
-      </TouchableOpacity>
-
-      {show && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={date}
-          mode={"date"}
-          is24Hour={true}
-          onChange={onChange}
-        />
-      )}
+      <DateTextBox />
 
       <SizedBox height={8} />
 
-      <View style={{ height: 1, backgroundColor: colors.gray }} />
-
-      <SizedBox height={8} />
-
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Text style={$text}>Mức độ ưu tiên</Text>
-        <Picker
-          selectedValue={selectedLanguage}
-          onValueChange={(itemValue, itemIndex) =>
-            setSelectedLanguage(itemValue)
-          }
-          style={{ width: 120 }}
-        >
-          <Picker.Item label="Cao" value="high" style={$text} />
-          <Picker.Item label="Trung bình" value="medium" style={$text} />
-          <Picker.Item label="Thấp" value="low" style={$text} />
-        </Picker>
-      </View>
-
-      <View style={{ height: 1, backgroundColor: colors.gray }} />
+      <PickerTextBox />
 
       <SizedBox height={32} />
 
