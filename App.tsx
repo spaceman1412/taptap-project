@@ -19,6 +19,7 @@ export default function App() {
         renderItem={(item) => <Task />}
         ItemSeparatorComponent={() => <View style={{ height: 24 }} />}
         contentContainerStyle={$flatList}
+        showsHorizontalScrollIndicator={false}
       />
 
       <Button />

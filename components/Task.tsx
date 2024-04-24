@@ -4,7 +4,6 @@ import {
   Text,
   TextStyle,
   TextInput,
-  Button as NativeButton,
   TouchableOpacity,
 } from "react-native";
 import React, { useState } from "react";
@@ -12,8 +11,8 @@ import { colors } from "../themes/colors";
 import { SizedBox } from "./SizedBox";
 import { FontAwesome } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
-import { Button } from "./Button";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { Picker } from "@react-native-picker/picker";
 
 export function Task(props) {
   return <OpenTask />;
@@ -50,6 +49,7 @@ const OpenTask = () => {
   const [text, onChangeText] = useState("Task 1");
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState();
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
@@ -109,12 +109,28 @@ const OpenTask = () => {
 
       <View style={{ height: 1, backgroundColor: colors.gray }} />
 
-      <SizedBox height={22} />
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text style={$text}>Mức độ ưu tiên</Text>
-        <Text>Cao</Text>
-      </View>
       <SizedBox height={8} />
+
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Text style={$text}>Mức độ ưu tiên</Text>
+        <Picker
+          selectedValue={selectedLanguage}
+          onValueChange={(itemValue, itemIndex) =>
+            setSelectedLanguage(itemValue)
+          }
+          style={{ width: 120 }}
+        >
+          <Picker.Item label="Cao" value="high" style={$text} />
+          <Picker.Item label="Trung bình" value="medium" style={$text} />
+          <Picker.Item label="Thấp" value="low" style={$text} />
+        </Picker>
+      </View>
 
       <View style={{ height: 1, backgroundColor: colors.gray }} />
 
