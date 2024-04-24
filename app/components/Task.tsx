@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { colors } from "../themes/colors";
 import { SizedBox } from "./SizedBox";
 import { FontAwesome } from "@expo/vector-icons";
@@ -125,11 +125,91 @@ interface OpenTaskProps {
   value: Todo;
 }
 
-export const OpenTask = (props: OpenTaskProps) => {
+interface PickerTextBoxProps {
+  selectedLanguage: "high" | "medium" | "low";
+  setSelectedLanguage: (value: "high" | "medium" | "low") => void;
+}
+
+const PickerTextBox = (props: PickerTextBoxProps) => {
+  const { selectedLanguage, setSelectedLanguage } = props;
+  return (
+    <>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Text style={$text}>Mức độ ưu tiên</Text>
+        <Picker
+          selectedValue={selectedLanguage}
+          onValueChange={(itemValue, itemIndex) =>
+            setSelectedLanguage(itemValue)
+          }
+          style={{ width: getSize.s(110) }}
+        >
+          <Picker.Item label="Cao" value="high" style={$text} />
+          <Picker.Item label="Trung bình" value="medium" style={$text} />
+          <Picker.Item label="Thấp" value="low" style={$text} />
+        </Picker>
+      </View>
+
+      <View style={{ height: 1, backgroundColor: colors.gray }} />
+    </>
+  );
+};
+
+interface DateTextBoxProps {
+  date: Date;
+  setDate: (date: Date) => void;
+}
+
+const DateTextBox = (props: DateTextBoxProps) => {
+  const { date, setDate } = props;
+  const [show, setShow] = useState(false);
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate;
+    setShow(false);
+    setDate(currentDate);
+  };
+
+  const showMode = () => {
+    setShow(true);
+  };
+
+  return (
+    <>
+      <TouchableOpacity
+        onPress={showMode}
+        style={{ flexDirection: "row", justifyContent: "space-between" }}
+      >
+        <Text style={$text}>Thời hạn</Text>
+        <Text>{getFormattedDate(date)}</Text>
+      </TouchableOpacity>
+
+      {show && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={date}
+          mode={"date"}
+          is24Hour={true}
+          onChange={onChange}
+        />
+      )}
+
+      <SizedBox height={8} />
+
+      <View style={{ height: 1, backgroundColor: colors.gray }} />
+    </>
+  );
+};
+
+export const OpenTask = memo((props: OpenTaskProps) => {
   const { onDone, onDelete, value } = props;
   const [text, onChangeText] = useState(value.text);
   const [date, setDate] = useState(new Date(value.date));
-  const [show, setShow] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState(value.priority);
 
   const currentTodo: Todo = {
@@ -153,73 +233,6 @@ export const OpenTask = (props: OpenTaskProps) => {
     onDone(currentTodo);
   };
 
-  const DateTextBox = () => {
-    const onChange = (event, selectedDate) => {
-      const currentDate = selectedDate;
-      setShow(false);
-      setDate(currentDate);
-    };
-
-    const showMode = () => {
-      setShow(true);
-    };
-
-    return (
-      <>
-        <TouchableOpacity
-          onPress={showMode}
-          style={{ flexDirection: "row", justifyContent: "space-between" }}
-        >
-          <Text style={$text}>Thời hạn</Text>
-          <Text>{getFormattedDate(date)}</Text>
-        </TouchableOpacity>
-
-        {show && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={date}
-            mode={"date"}
-            is24Hour={true}
-            onChange={onChange}
-          />
-        )}
-
-        <SizedBox height={8} />
-
-        <View style={{ height: 1, backgroundColor: colors.gray }} />
-      </>
-    );
-  };
-
-  const PickerTextBox = () => {
-    return (
-      <>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Text style={$text}>Mức độ ưu tiên</Text>
-          <Picker
-            selectedValue={selectedLanguage}
-            onValueChange={(itemValue, itemIndex) =>
-              setSelectedLanguage(itemValue)
-            }
-            style={{ width: getSize.s(110) }}
-          >
-            <Picker.Item label="Cao" value="high" style={$text} />
-            <Picker.Item label="Trung bình" value="medium" style={$text} />
-            <Picker.Item label="Thấp" value="low" style={$text} />
-          </Picker>
-        </View>
-
-        <View style={{ height: 1, backgroundColor: colors.gray }} />
-      </>
-    );
-  };
-
   return (
     <Animated.View exiting={FadeOutUp} style={$closeContainer}>
       <View
@@ -236,6 +249,7 @@ export const OpenTask = (props: OpenTaskProps) => {
         </TouchableOpacity>
       </View>
       <SizedBox height={8} />
+
       <TextInput
         value={text}
         autoFocus
@@ -249,11 +263,15 @@ export const OpenTask = (props: OpenTaskProps) => {
       />
 
       <SizedBox height={22} />
-      <DateTextBox />
+
+      <DateTextBox date={date} setDate={setDate} />
 
       <SizedBox height={8} />
 
-      <PickerTextBox />
+      <PickerTextBox
+        selectedLanguage={selectedLanguage}
+        setSelectedLanguage={setSelectedLanguage}
+      />
 
       <SizedBox height={32} />
 
@@ -262,7 +280,7 @@ export const OpenTask = (props: OpenTaskProps) => {
       </TouchableOpacity>
     </Animated.View>
   );
-};
+});
 
 const CheckBox = () => {
   return <View style={$checkBox} />;
@@ -289,7 +307,7 @@ const $closeContainer: ViewStyle = {
   backgroundColor: colors.white,
   borderRadius: 15,
   paddingHorizontal: 24,
-  paddingVertical: 32,
+  paddingVertical: 24,
 };
 
 const $dateText: TextStyle = {
