@@ -5,6 +5,7 @@ import {
   TextStyle,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { colors } from "../themes/colors";
@@ -119,6 +120,20 @@ export const OpenTask = ({ onDone, onDelete, value }) => {
     id: value.id,
   };
 
+  const checkError = () => {
+    if (text === "" || text === undefined) {
+      return true;
+    }
+  };
+
+  const handleOnDone = () => {
+    if (checkError()) {
+      Alert.alert("Please enter text");
+      return;
+    }
+    onDone(currentTodo);
+  };
+
   const DateTextBox = () => {
     const onChange = (event, selectedDate) => {
       const currentDate = selectedDate;
@@ -223,10 +238,7 @@ export const OpenTask = ({ onDone, onDelete, value }) => {
 
       <SizedBox height={32} />
 
-      <TouchableOpacity
-        onPress={() => onDone(currentTodo)}
-        style={$confirmButton}
-      >
+      <TouchableOpacity onPress={handleOnDone} style={$confirmButton}>
         <Text style={{ color: colors.white }}>Xong</Text>
       </TouchableOpacity>
     </Animated.View>

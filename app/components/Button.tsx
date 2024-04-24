@@ -34,10 +34,6 @@ const $text: TextStyle = {
 };
 
 const $buttonContainer: ViewStyle = {
-  position: "absolute",
-  left: 0,
-  right: 0,
-  bottom: 24,
   justifyContent: "center",
   alignItems: "center",
 };

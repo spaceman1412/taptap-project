@@ -106,7 +106,7 @@ const $container: ViewStyle = {
 const $flatList: ViewStyle = {
   alignItems: "center",
   justifyContent: "center",
-  marginTop: 32,
+  paddingVertical: 32,
 };
 
 const $titleText: TextStyle = {
