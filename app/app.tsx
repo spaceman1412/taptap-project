@@ -2,14 +2,13 @@ import { StatusBar } from "expo-status-bar";
 import { FlatList, Text, TextStyle, View, ViewStyle } from "react-native";
 import { colors } from "./themes/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { getFormattedDate, OpenTask, Task } from "./components/Task";
+import { OpenTask, Task } from "./components/Task";
 import { Button } from "./components/Button";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "./store/store";
 import { useState } from "react";
 import { addTodo, Todo } from "./store/todoSlice";
-
-const DATA = ["aa", "bb", "cc", "dd"];
+import { getSize } from "./themes/responsive";
 
 export function generateUUID(digits) {
   let str = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXZ";
@@ -51,7 +50,6 @@ export default function App() {
     });
   };
 
-  console.log("todoLists", todoLists);
   return (
     <SafeAreaView style={$container}>
       <StatusBar style="auto" />
@@ -90,11 +88,6 @@ export default function App() {
   );
 }
 
-const $buttonTitle: TextStyle = {
-  fontSize: 14,
-  fontWeight: "500",
-};
-
 const $container: ViewStyle = {
   flex: 1,
   backgroundColor: colors.background,
@@ -111,7 +104,7 @@ const $flatList: ViewStyle = {
 
 const $titleText: TextStyle = {
   color: colors.white,
-  fontSize: 20,
+  fontSize: getSize.font(20),
   alignSelf: "center",
   fontWeight: "500",
 };

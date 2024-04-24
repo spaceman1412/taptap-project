@@ -17,6 +17,7 @@ import { Picker } from "@react-native-picker/picker";
 import Animated, { FadeOutDown, FadeOutUp } from "react-native-reanimated";
 import { editTodo, removeTodo, Todo } from "../store/todoSlice";
 import { useDispatch } from "react-redux";
+import { getSize } from "../themes/responsive";
 
 export function Task({ value }) {
   const [open, setOpen] = useState(false);
@@ -188,7 +189,7 @@ export const OpenTask = ({ onDone, onDelete, value }) => {
             onValueChange={(itemValue, itemIndex) =>
               setSelectedLanguage(itemValue)
             }
-            style={{ width: 120 }}
+            style={{ width: getSize.s(110) }}
           >
             <Picker.Item label="Cao" value="high" style={$text} />
             <Picker.Item label="Trung bình" value="medium" style={$text} />
@@ -250,8 +251,8 @@ const CheckBox = () => {
 };
 
 const $confirmButton: ViewStyle = {
-  width: 85,
-  height: 28,
+  width: getSize.s(85),
+  height: getSize.v(28),
   borderRadius: 20,
   backgroundColor: colors.green,
   justifyContent: "center",
@@ -265,8 +266,8 @@ const $deleteText: TextStyle = {
 };
 
 const $closeContainer: ViewStyle = {
-  width: 327,
-  height: 299,
+  width: getSize.s(327),
+  height: getSize.v(250),
   backgroundColor: colors.white,
   borderRadius: 15,
   paddingHorizontal: 24,
@@ -287,7 +288,6 @@ const $priorityText: TextStyle = {
 const $endContainer: ViewStyle = {
   marginRight: 24,
   alignItems: "flex-end",
-
   justifyContent: "space-between",
 };
 
@@ -305,8 +305,8 @@ const $checkBox: ViewStyle = {
 };
 
 const $openContainer: ViewStyle = {
-  width: 327,
-  height: 114,
+  width: getSize.s(327),
+  height: getSize.v(100),
   backgroundColor: colors.white,
   borderRadius: 15,
   flexDirection: "row",

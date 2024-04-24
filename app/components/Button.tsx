@@ -10,7 +10,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { colors } from "../themes/colors";
 import { SizedBox } from "./SizedBox";
 import { useDispatch } from "react-redux";
-import { test } from "../store/todoSlice";
+import { getSize } from "../themes/responsive";
 
 export function Button({ onClick }) {
   const dispatch = useDispatch();
@@ -28,7 +28,7 @@ export function Button({ onClick }) {
 }
 
 const $text: TextStyle = {
-  fontSize: 14,
+  fontSize: getSize.font(14),
   fontWeight: "500",
   color: colors.white,
 };
@@ -39,8 +39,8 @@ const $buttonContainer: ViewStyle = {
 };
 
 const $button: ViewStyle = {
-  width: 335,
-  height: 44,
+  width: getSize.s(335),
+  height: getSize.v(44),
   backgroundColor: colors.pink,
   borderRadius: 20,
   justifyContent: "center",
