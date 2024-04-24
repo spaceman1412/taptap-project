@@ -31,6 +31,26 @@ export default function App() {
     dispatch(addTodo(todo));
   };
 
+  const getSortedTodoList = () => {
+    let sortedArray = todoLists.concat();
+    const getPoint = (priority) => {
+      if (priority === "high") return 2;
+      else if (priority === "medium") return 1;
+      else if (priority === "low") return 0;
+      else return 0;
+    };
+
+    return sortedArray.sort(function (x, y) {
+      if (getPoint(x.priority) > getPoint(y.priority)) {
+        return -1;
+      }
+      if (getPoint(x.priority) < getPoint(y.priority)) {
+        return 1;
+      }
+      return 0;
+    });
+  };
+
   console.log("todoLists", todoLists);
   return (
     <SafeAreaView style={$container}>
@@ -57,7 +77,7 @@ export default function App() {
       )}
 
       <FlatList
-        data={todoLists}
+        data={getSortedTodoList()}
         keyExtractor={(item) => item.id}
         renderItem={(item) => <Task value={item} />}
         ItemSeparatorComponent={() => <View style={{ height: 24 }} />}
