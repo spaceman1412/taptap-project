@@ -11,12 +11,14 @@ import { addTodo, Todo } from "./store/todoSlice";
 
 const DATA = ["aa", "bb", "cc", "dd"];
 
-const newTodo: Todo = {
-  id: Date.now().toString(),
-  text: "Task",
-  date: getFormattedDate(new Date()),
-  priority: "high",
-};
+export function generateUUID(digits) {
+  let str = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXZ";
+  let uuid = [];
+  for (let i = 0; i < digits; i++) {
+    uuid.push(str[Math.floor(Math.random() * str.length)]);
+  }
+  return uuid.join("");
+}
 
 export default function App() {
   const todoLists = useSelector(
@@ -29,6 +31,7 @@ export default function App() {
     dispatch(addTodo(todo));
   };
 
+  console.log("todoLists", todoLists);
   return (
     <SafeAreaView style={$container}>
       <StatusBar style="auto" />
@@ -44,12 +47,18 @@ export default function App() {
           onDelete={() => {
             setAdd(false);
           }}
-          value={newTodo}
+          value={{
+            id: generateUUID(10),
+            text: "Task",
+            date: getFormattedDate(new Date()),
+            priority: "high",
+          }}
         />
       )}
 
       <FlatList
         data={todoLists}
+        keyExtractor={(item) => item.id}
         renderItem={(item) => <Task value={item} />}
         ItemSeparatorComponent={() => <View style={{ height: 24 }} />}
         contentContainerStyle={$flatList}

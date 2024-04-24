@@ -32,14 +32,13 @@ export const todoSlice = createSlice({
       );
     },
     editTodo: (state, action: PayloadAction<any>) => {
-      state.todoLists = state.todoLists.map((todo) => {
-        if (todo.id === action.payload.id) {
-          return action.payload;
-        }
-      });
+      const newLists = state.todoLists.map((todo) =>
+        todo.id === action.payload.id ? action.payload : todo
+      );
+      state.todoLists = newLists;
     },
   },
 });
 
-export const { test, addTodo, removeTodo, editTodo } = todoSlice.actions;
+export const { addTodo, removeTodo, editTodo } = todoSlice.actions;
 export default todoSlice.reducer;
