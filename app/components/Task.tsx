@@ -14,9 +14,12 @@ import { Feather } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker";
 import Animated, { FadeOutDown, FadeOutUp } from "react-native-reanimated";
+import { editTodo, removeTodo, Todo } from "../store/todoSlice";
+import { useDispatch } from "react-redux";
 
-export function Task(props) {
+export function Task({ value }) {
   const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
 
   const changeStatus = () => {
     setOpen((currentOpen) => !currentOpen);
@@ -25,21 +28,40 @@ export function Task(props) {
   return (
     <>
       {open ? (
-        <OpenTask onClick={changeStatus} />
+        <OpenTask
+          value={value.item}
+          onDelete={() => {
+            dispatch(removeTodo(value.item.id));
+          }}
+          onDone={(todo) => {
+            dispatch(editTodo(todo));
+            changeStatus();
+          }}
+        />
       ) : (
-        <CloseTask onClick={changeStatus} />
+        <CloseTask onClick={changeStatus} value={value.item} />
       )}
     </>
   );
 }
 
-const CloseTask = ({ onClick }) => {
+const CloseTask = ({ onClick, value }) => {
+  const getPriorityLabel = () => {
+    if (value.priority === "high") {
+      return "Ưu tiên cao";
+    } else if (value.priority === "medium") {
+      return "Ưu tiên trung bình";
+    } else if (value.priority === "low") {
+      return "Ưu tiên thấp";
+    }
+  };
+
   return (
     <Animated.View exiting={FadeOutDown} style={$openContainer}>
       <CheckBox />
       <View style={$taskContainer}>
-        <Text style={$text}>Task 1</Text>
-        <Text style={$priorityText}>Ưu tiên cao</Text>
+        <Text style={$text}>{value.text}</Text>
+        <Text style={$priorityText}>{getPriorityLabel()}</Text>
       </View>
       <View style={$endContainer}>
         <TouchableOpacity onPress={onClick}>
@@ -51,7 +73,7 @@ const CloseTask = ({ onClick }) => {
   );
 };
 
-const getFormattedDate = (date: Date) => {
+export const getFormattedDate = (date: Date) => {
   const day = date.getDate();
   const month = date.getMonth() + 1;
   const year = date.getFullYear();
@@ -62,80 +84,84 @@ const getFormattedDate = (date: Date) => {
   return currentDate;
 };
 
-const DateTextBox = () => {
-  const [date, setDate] = useState(new Date());
+export const OpenTask = ({ onDone, onDelete, value }) => {
+  const [text, onChangeText] = useState(value.text);
+  const [date, setDate] = useState(value.date);
   const [show, setShow] = useState(false);
-
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setShow(false);
-    setDate(currentDate);
+  const [selectedLanguage, setSelectedLanguage] = useState(value.priority);
+  const currentTodo: Todo = {
+    text,
+    date,
+    priority: selectedLanguage,
+    id: value.id,
   };
 
-  const showMode = () => {
-    setShow(true);
-  };
+  const DateTextBox = () => {
+    const onChange = (event, selectedDate) => {
+      const currentDate = selectedDate;
+      setShow(false);
+      setDate(currentDate);
+    };
 
-  return (
-    <>
-      <TouchableOpacity
-        onPress={showMode}
-        style={{ flexDirection: "row", justifyContent: "space-between" }}
-      >
-        <Text style={$text}>Thời hạn</Text>
-        <Text>{getFormattedDate(date)}</Text>
-      </TouchableOpacity>
+    const showMode = () => {
+      setShow(true);
+    };
 
-      {show && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={date}
-          mode={"date"}
-          is24Hour={true}
-          onChange={onChange}
-        />
-      )}
-
-      <SizedBox height={8} />
-
-      <View style={{ height: 1, backgroundColor: colors.gray }} />
-    </>
-  );
-};
-
-const PickerTextBox = () => {
-  const [selectedLanguage, setSelectedLanguage] = useState();
-
-  return (
-    <>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Text style={$text}>Mức độ ưu tiên</Text>
-        <Picker
-          selectedValue={selectedLanguage}
-          onValueChange={(itemValue, itemIndex) =>
-            setSelectedLanguage(itemValue)
-          }
-          style={{ width: 120 }}
+    return (
+      <>
+        <TouchableOpacity
+          onPress={showMode}
+          style={{ flexDirection: "row", justifyContent: "space-between" }}
         >
-          <Picker.Item label="Cao" value="high" style={$text} />
-          <Picker.Item label="Trung bình" value="medium" style={$text} />
-          <Picker.Item label="Thấp" value="low" style={$text} />
-        </Picker>
-      </View>
+          <Text style={$text}>Thời hạn</Text>
+          <Text>{date}</Text>
+        </TouchableOpacity>
 
-      <View style={{ height: 1, backgroundColor: colors.gray }} />
-    </>
-  );
-};
+        {show && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={date}
+            mode={"date"}
+            is24Hour={true}
+            onChange={onChange}
+          />
+        )}
 
-const OpenTask = ({ onClick }) => {
-  const [text, onChangeText] = useState("Task 1");
+        <SizedBox height={8} />
+
+        <View style={{ height: 1, backgroundColor: colors.gray }} />
+      </>
+    );
+  };
+
+  const PickerTextBox = () => {
+    return (
+      <>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Text style={$text}>Mức độ ưu tiên</Text>
+          <Picker
+            selectedValue={selectedLanguage}
+            onValueChange={(itemValue, itemIndex) =>
+              setSelectedLanguage(itemValue)
+            }
+            style={{ width: 120 }}
+          >
+            <Picker.Item label="Cao" value="high" style={$text} />
+            <Picker.Item label="Trung bình" value="medium" style={$text} />
+            <Picker.Item label="Thấp" value="low" style={$text} />
+          </Picker>
+        </View>
+
+        <View style={{ height: 1, backgroundColor: colors.gray }} />
+      </>
+    );
+  };
 
   return (
     <Animated.View exiting={FadeOutUp} style={$closeContainer}>
@@ -146,13 +172,16 @@ const OpenTask = ({ onClick }) => {
           flexDirection: "row",
         }}
       >
-        <Feather name="trash-2" size={24} color="black" />
-        <SizedBox width={5} />
-        <Text style={$deleteText}>Xóa</Text>
+        <TouchableOpacity style={{ flexDirection: "row" }} onPress={onDelete}>
+          <Feather name="trash-2" size={24} color="black" />
+          <SizedBox width={5} />
+          <Text style={$deleteText}>Xóa</Text>
+        </TouchableOpacity>
       </View>
       <SizedBox height={8} />
       <TextInput
         value={text}
+        autoFocus
         onChangeText={onChangeText}
         style={{
           borderBottomWidth: 1,
@@ -171,7 +200,10 @@ const OpenTask = ({ onClick }) => {
 
       <SizedBox height={32} />
 
-      <TouchableOpacity onPress={onClick} style={$confirmButton}>
+      <TouchableOpacity
+        onPress={() => onDone(currentTodo)}
+        style={$confirmButton}
+      >
         <Text style={{ color: colors.white }}>Xong</Text>
       </TouchableOpacity>
     </Animated.View>

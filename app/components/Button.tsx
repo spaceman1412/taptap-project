@@ -9,11 +9,14 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 import { colors } from "../themes/colors";
 import { SizedBox } from "./SizedBox";
+import { useDispatch } from "react-redux";
+import { test } from "../store/todoSlice";
 
-export function Button(props) {
+export function Button({ onClick }) {
+  const dispatch = useDispatch();
   return (
     <View style={$buttonContainer}>
-      <TouchableOpacity style={$button} onPress={() => console.log("aaa")}>
+      <TouchableOpacity style={$button} onPress={onClick}>
         <>
           <Text style={$text}>Tạo task mới</Text>
           <SizedBox width={10} />
