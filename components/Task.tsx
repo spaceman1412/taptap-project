@@ -13,24 +13,41 @@ import { FontAwesome } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker";
+import Animated, { FadeOutDown, FadeOutUp } from "react-native-reanimated";
 
 export function Task(props) {
-  return <OpenTask />;
+  const [open, setOpen] = useState(false);
+
+  const changeStatus = () => {
+    setOpen((currentOpen) => !currentOpen);
+  };
+
+  return (
+    <>
+      {open ? (
+        <OpenTask onClick={changeStatus} />
+      ) : (
+        <CloseTask onClick={changeStatus} />
+      )}
+    </>
+  );
 }
 
-const CloseTask = () => {
+const CloseTask = ({ onClick }) => {
   return (
-    <View style={$openContainer}>
+    <Animated.View exiting={FadeOutDown} style={$openContainer}>
       <CheckBox />
       <View style={$taskContainer}>
         <Text style={$text}>Task 1</Text>
         <Text style={$priorityText}>Ưu tiên cao</Text>
       </View>
       <View style={$endContainer}>
-        <FontAwesome name="pencil" size={24} color="black" />
+        <TouchableOpacity onPress={onClick}>
+          <FontAwesome name="pencil" size={24} color="black" />
+        </TouchableOpacity>
         <Text style={$dateText}>Còn 2 ngày</Text>
       </View>
-    </View>
+    </Animated.View>
   );
 };
 
@@ -117,11 +134,11 @@ const PickerTextBox = () => {
   );
 };
 
-const OpenTask = () => {
+const OpenTask = ({ onClick }) => {
   const [text, onChangeText] = useState("Task 1");
 
   return (
-    <View style={$closeContainer}>
+    <Animated.View exiting={FadeOutUp} style={$closeContainer}>
       <View
         style={{
           alignSelf: "flex-end",
@@ -154,10 +171,10 @@ const OpenTask = () => {
 
       <SizedBox height={32} />
 
-      <TouchableOpacity style={$confirmButton}>
+      <TouchableOpacity onPress={onClick} style={$confirmButton}>
         <Text style={{ color: colors.white }}>Xong</Text>
       </TouchableOpacity>
-    </View>
+    </Animated.View>
   );
 };
 

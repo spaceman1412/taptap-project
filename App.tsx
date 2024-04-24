@@ -4,6 +4,7 @@ import { colors } from "./themes/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Task } from "./components/Task";
 import { Button } from "./components/Button";
+import Progress from "./components/progress";
 
 const DATA = ["aa", "bb", "cc", "dd"];
 
@@ -19,7 +20,7 @@ export default function App() {
         renderItem={(item) => <Task />}
         ItemSeparatorComponent={() => <View style={{ height: 24 }} />}
         contentContainerStyle={$flatList}
-        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
       />
 
       <Button />
