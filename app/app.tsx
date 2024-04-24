@@ -50,7 +50,7 @@ export default function App() {
           value={{
             id: generateUUID(10),
             text: "Task",
-            date: getFormattedDate(new Date()),
+            date: new Date().toISOString(),
             priority: "high",
           }}
         />

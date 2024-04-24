@@ -45,29 +45,52 @@ export function Task({ value }) {
   );
 }
 
+const getDatesBetween = (day) => {
+  const date = new Date(day);
+  const currentDate = new Date();
+  // Calculating the time difference
+  // of two dates
+  let Difference_In_Time = date.getTime() - currentDate.getTime();
+
+  // Calculating the no. of days between
+  // two dates
+  let Difference_In_Days = Math.round(Difference_In_Time / (1000 * 3600 * 24));
+  console.log(Difference_In_Days);
+
+  return Difference_In_Days > 0 ? Difference_In_Days : 0;
+};
+
 const CloseTask = ({ onClick, value }) => {
-  const getPriorityLabel = () => {
-    if (value.priority === "high") {
-      return "Ưu tiên cao";
-    } else if (value.priority === "medium") {
-      return "Ưu tiên trung bình";
-    } else if (value.priority === "low") {
-      return "Ưu tiên thấp";
-    }
-  };
+  let priorityText;
+  let priorityColor;
+
+  if (value.priority === "high") {
+    priorityText = "Ưu tiên cao";
+    priorityColor = colors.green;
+  } else if (value.priority === "medium") {
+    priorityText = "Ưu tiên trung bình";
+    priorityColor = colors.yellow;
+  } else if (value.priority === "low") {
+    priorityText = "Ưu tiên thấp";
+    priorityColor = colors.red;
+  }
 
   return (
     <Animated.View exiting={FadeOutDown} style={$openContainer}>
       <CheckBox />
       <View style={$taskContainer}>
         <Text style={$text}>{value.text}</Text>
-        <Text style={$priorityText}>{getPriorityLabel()}</Text>
+        <Text style={[$priorityText, { color: priorityColor }]}>
+          {priorityText}
+        </Text>
       </View>
       <View style={$endContainer}>
         <TouchableOpacity onPress={onClick}>
           <FontAwesome name="pencil" size={24} color="black" />
         </TouchableOpacity>
-        <Text style={$dateText}>Còn 2 ngày</Text>
+        <Text style={$dateText}>{`Còn ${getDatesBetween(
+          value.date
+        )} ngày`}</Text>
       </View>
     </Animated.View>
   );
@@ -86,12 +109,12 @@ export const getFormattedDate = (date: Date) => {
 
 export const OpenTask = ({ onDone, onDelete, value }) => {
   const [text, onChangeText] = useState(value.text);
-  const [date, setDate] = useState(value.date);
+  const [date, setDate] = useState(new Date(value.date));
   const [show, setShow] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState(value.priority);
   const currentTodo: Todo = {
     text,
-    date,
+    date: date.toISOString(),
     priority: selectedLanguage,
     id: value.id,
   };
@@ -114,7 +137,7 @@ export const OpenTask = ({ onDone, onDelete, value }) => {
           style={{ flexDirection: "row", justifyContent: "space-between" }}
         >
           <Text style={$text}>Thời hạn</Text>
-          <Text>{date}</Text>
+          <Text>{getFormattedDate(date)}</Text>
         </TouchableOpacity>
 
         {show && (
